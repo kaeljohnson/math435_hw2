@@ -1,0 +1,28 @@
+import numpy as np
+import pandas as pd
+
+
+def find_distance(vec_1, vec_2):
+    diff = vec_1 - vec_2
+    sum_sqr = np.dot(diff, diff)
+    return np.sqrt(sum_sqr)
+
+
+def make_distance_matrix(data):
+    vectors = data.iloc[:, 0:64].to_numpy()
+    num_rows = data.shape[0]
+    distances = np.zeros((num_rows, num_rows))
+
+    for i in range(num_rows):
+        for j in range(i, num_rows):
+            distance = find_distance(vectors[i, :], vectors[j, :])
+            distances[i, j] = distance
+            distances[j, i] = distance
+
+    return pd.DataFrame(distances)
+        
+
+if __name__ == '__main__':
+    data = pd.read_csv("optdigits_tra.csv")
+    distances = make_distance_matrix(data)
+    distances.to_csv( "distances_tra.csv", header=False, index=False)
